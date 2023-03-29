@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon || Random</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inconsolata', monospace;
+        }
+
+        body {
+            background-color: #F9EED9;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .imagen {
+            height: 300px;
+        }
+
+        .title--name {
+            align-self: center;
+            font-weight: 700;
+            font-size: 2rem;
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+    </div>
+
+
+
+    <template id="pokemon-template">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Inconsolata', monospace;
+            }
+
+            .card {
+                background-color: #FDF6E9;
+                max-width: 450px;
+                border: 3px solid #333;
+                padding: 10px 15px;
+                border-radius: 10px;
+                box-shadow: 4px 4px 0 3px #000;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+
+            .card div {
+                width: 100%;
+            }
+
+
+
+            .btn {
+                cursor: pointer;
+                font-weight: 500;
+                font-size: 22px;
+                width: 100%;
+                outline: none;
+                border: 1px solid #333;
+                background-color: #FDF6E9;
+                border-radius: 5px;
+                box-shadow: 1px 1px 0 1px #000;
+                padding: 5px 10px;
+            }
+
+            .btn:hover {
+                background-color: #F9EED9;
+            }
+            .card--image{
+                width: 300px;
+                height: 300px;
+            }
+            .card--header {
+                display: flex;
+                flex-direction: column;
+                align-items: end;
+            }
+
+            .card--header span {
+                font-weight: 700;
+                font-size: 1.8rem;
+            }
+
+            .card--body {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+
+
+
+
+            .card--footer {
+                margin-bottom: 5px;
+            }
+
+            .poke--stats {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                font-size: 1.3rem;
+            }
+
+            .poke--stats div {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                gap: 10px;
+                justify-content: space-between;
+            }
+
+            .poke--stats div p:nth-child(1) {
+                font-weight: 700;
+
+            }
+        </style>
+        <!-- card pokemon -->
+        <section class="card">
+            <div class="card--header">
+                <span class="id--pokemon">#<slot name="id-pokemon"><span>0</span></slot></span>
+            </div>
+            <div class="card--image">
+                <slot name="sl-image-pokemon">
+                    <img src="./assets/images/default.png" alt="pokoemon" title="pokemon">
+                </slot>
+            </div>
+            <div class="card--body">
+                <slot name="slot-name-pokemon">
+                    <h3>Squirtle</h3>
+                </slot>
+                <div class="poke--stats">
+                    <div class="hp">
+                        <p>HP</p>
+                        <slot name="slot-hp">
+                            <p>44</p>
+                        </slot>
+                    </div>
+                    <div class="atk">
+                        <p>ATK</p>
+                        <slot name="slot-atack">
+                            <p>48</p>
+                        </slot>
+                    </div class="atk">
+                    <div class="def">
+                        <p>DEF</p>
+                        <slot name="slot-defense">
+                            <p>65</p>
+                        </slot>
+                    </div class="def">
+                    <div class="spd">
+                        <p>SPD</p>
+                        <slot name="slot-speed">
+                            <p>43</p>
+                        </slot>
+                    </div class="spd">
+                </div>
+            </div>
+
+            <div class="card--footer">
+                <div class="buttons">
+                    <button type="button" onclick="loadPokemon()" class="btn">Get Random Pokemon</button>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        customElements.define('card-pokemon-component',
+            class extends HTMLElement {
+                constructor() {
+                    super(); // Always call super first in constructor
+                    const starRating = document.getElementById('pokemon-template').content;
+                    const shadowRoot = this.attachShadow({ mode: 'open' });
+                    shadowRoot.appendChild(starRating.cloneNode(true));
+                }
+            });
+
+
+
+        function createComponentPokemon(id, image, namePokemon, hitpoint, atack, defense, speed) {
+            /*
+                Crea elemento usando el template, pasa datos via slots, evitando crear
+                cada elemento innecesario
+            */
+            // elemento principal
+            const card = document.createElement("card-pokemon-component");
+            // id
+            const pId = document.createElement("span");
+            pId.setAttribute("slot", "id-pokemon");
+            pId.innerText = id;
+            // imagen
+            const imagen = document.createElement("img");
+            imagen.classList.add("imagen");
+            imagen.setAttribute("slot", "sl-image-pokemon");
+            imagen.setAttribute("src", image);
+            // name
+            const pNmae = document.createElement("h3");
+            pNmae.classList.add("title--name");
+            pNmae.setAttribute("slot", "slot-name-pokemon");
+            pNmae.innerText = namePokemon;
+            // stats
+            const hp = document.createElement("p");
+            hp.setAttribute("slot", "slot-hp");
+            hp.innerText = hitpoint;
+
+            const atk = document.createElement("p");
+            atk.setAttribute("slot", "slot-atack");
+            atk.innerText = atack;
+
+            const def = document.createElement("p");
+            def.setAttribute("slot", "slot-defense");
+            def.innerText = defense;
+
+            const spd = document.createElement("p");
+            spd.setAttribute("slot", "slot-speed");
+            spd.innerText = speed;
+            //add to card
+            card.appendChild(pId);
+            card.appendChild(imagen);
+            card.appendChild(pNmae);
+            card.appendChild(hp);
+            card.appendChild(atk);
+            card.appendChild(def);
+            card.appendChild(spd);
+            const content = document.querySelector(".container");
+            content.innerHTML = "";
+            content.appendChild(card)
+        }
+
+
+        async function GetPokemonRandom(pokemon) {
+            /*
+                api pokemon
+                url https://pokeapi.co/api/v2/pokemon/{id|name}
+            */
+            await axios.get("https://pokeapi.co/api/v2/pokemon/" + pokemon)
+                .then(response => {
+
+                    document.querySelector(".container").innerHTML = "Cargando...";
+                    let imagen = response.data.sprites.other.home.front_default;
+                    let name = response.data.forms[0].name;
+                    let hitp = response.data.stats[0].base_stat;
+                    let atack = response.data.stats[1].base_stat;
+                    let defense = response.data.stats[2].base_stat;
+                    let speed = response.data.stats[5].base_stat;
+                    let nId = response.data.id;
+
+                    createComponentPokemon(nId, imagen, name, hitp, atack, defense, speed);
+                })
+                .catch(err => {
+                    console.error("Error: \n" + err)
+                })
+        }
+        function getRandom(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+
+        function loadPokemon(){
+            const id = getRandom(1,151);
+            GetPokemonRandom(id);
+        }
+        GetPokemonRandom(1);
+    </script>
+</body>
+
+</html>
