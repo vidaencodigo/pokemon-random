@@ -25,7 +25,7 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            height: 100vh;
+            height: 90vh;
             align-items: center;
             justify-content: center;
         }
@@ -40,10 +40,33 @@
             font-size: 2rem;
             text-transform: capitalize;
         }
+        .search {
+            width: 100%;
+            padding: 10px 25px;
+        }
+        .control {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        input {
+            outline: none;
+            border: none;
+            padding: 10px 15px;
+            max-width: 100%;
+            font-weight: 500;
+            font-size: 2rem;
+        }
     </style>
 </head>
 
 <body>
+    <section class="search">
+        <div class="control">
+            <input type="text" onchange="searchPokemon(this)" placeholder="Type number or pokemon name" autofocus>
+        </div>
+    </section>
     <div class="container">
 
     </div>
@@ -290,6 +313,12 @@
         function loadPokemon(){
             const id = getRandom(1,151);
             GetPokemonRandom(id);
+        }
+        
+
+        function searchPokemon(ele) {
+            GetPokemonRandom(ele.value);
+            ele.value = "";
         }
         GetPokemonRandom(1);
     </script>
